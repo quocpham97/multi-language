@@ -8,11 +8,15 @@ const apiKey = config.API_KEY;
 const fileNames = ["en.json", "vi.json", "zh-TW.json", "zh-CN.json"];
 var locales = [{}, {}, {}, {}];
 
+// index is sheetId of sheet data
 const loadDataSheet = (sheetData: any, index: number) => {
+  console.log(sheetData.sheets[index].properties.sheetId);
+
   return new Promise(() => {
     const url = "https://docs.google.com/spreadsheets/d/";
-    const query = `/gviz/tq?gid=${sheetData.sheetId}`;
+    const query = `/gviz/tq?gid=${sheetData.sheets[index].properties.sheetId}`;
     const endPoint = `${url}${ssid}${query}`;
+
     https
       .get(endPoint, (resp: any) => {
         resp.setEncoding("utf8");
@@ -82,7 +86,8 @@ const loadListSheet = async ({ ssid = "", apiKey = "" }) => {
       });
 
       resp.on("end", () => {
-        loadDataSheet(JSON.parse(data), 0);
+        // change sheet Id
+        loadDataSheet(JSON.parse(data), 3);
       });
     })
     .on("error", (err: any) => {
